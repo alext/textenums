@@ -41,21 +41,8 @@ var (
     }
 )
 
-func init() {
-    var v {{$typename}}
-    if _, ok := interface{}(v).(fmt.Stringer); ok {
-        _{{$typename}}NameToValue = map[string]{{$typename}} {
-            {{range $values}}interface{}({{.}}).(fmt.Stringer).String(): {{.}},
-            {{end}}
-        }
-    }
-}
-
 // MarshalJSON is generated so {{$typename}} satisfies json.Marshaler.
 func (r {{$typename}}) MarshalJSON() ([]byte, error) {
-    if s, ok := interface{}(r).(fmt.Stringer); ok {
-        return json.Marshal(s.String())
-    }
     s, ok := _{{$typename}}ValueToName[r]
     if !ok {
         return nil, fmt.Errorf("invalid {{$typename}}: %d", r)
