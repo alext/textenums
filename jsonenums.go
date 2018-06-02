@@ -12,11 +12,10 @@
 // limitations under the License.
 
 // JSONenums is a tool to automate the creation of methods that satisfy the
-// fmt.Stringer, json.Marshaler and json.Unmarshaler interfaces.
+// json.Marshaler and json.Unmarshaler interfaces.
 // Given the name of a (signed or unsigned) integer type T that has constants
 // defined, jsonenums will create a new self-contained Go source file implementing
 //
-//  func (t T) String() string
 //  func (t T) MarshalJSON() ([]byte, error)
 //  func (t *T) UnmarshalJSON([]byte) error
 //
@@ -47,7 +46,6 @@
 // in the same directory will create the file pill_jsonenums.go, in package painkiller,
 // containing a definition of
 //
-//  func (r Pill) String() string
 //  func (r Pill) MarshalJSON() ([]byte, error)
 //  func (r *Pill) UnmarshalJSON([]byte) error
 //
