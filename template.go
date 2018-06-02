@@ -23,7 +23,6 @@ var generatedTmpl = template.Must(template.New("generated").Parse(`
 package {{.PackageName}}
 
 import (
-    "encoding/json"
     "fmt"
 )
 
@@ -41,24 +40,20 @@ var (
     }
 )
 
-// MarshalJSON is generated so {{$typename}} satisfies json.Marshaler.
-func (r {{$typename}}) MarshalJSON() ([]byte, error) {
+// MarshalText is generated so {{$typename}} satisfies encoding.TextMarshaler.
+func (r {{$typename}}) MarshalText() ([]byte, error) {
     s, ok := _{{$typename}}ValueToName[r]
     if !ok {
         return nil, fmt.Errorf("invalid {{$typename}}: %d", r)
     }
-    return json.Marshal(s)
+    return []byte(s), nil
 }
 
-// UnmarshalJSON is generated so {{$typename}} satisfies json.Unmarshaler.
-func (r *{{$typename}}) UnmarshalJSON(data []byte) error {
-    var s string
-    if err := json.Unmarshal(data, &s); err != nil {
-        return fmt.Errorf("{{$typename}} should be a string, got %s", data)
-    }
-    v, ok := _{{$typename}}NameToValue[s]
+// UnmarshalText is generated so {{$typename}} satisfies encoding.TextUnmarshaler.
+func (r *{{$typename}}) UnmarshalText(data []byte) error {
+    v, ok := _{{$typename}}NameToValue[string(data)]
     if !ok {
-        return fmt.Errorf("invalid {{$typename}} %q", s)
+        return fmt.Errorf("invalid {{$typename}} '%s'", data)
     }
     *r = v
     return nil
