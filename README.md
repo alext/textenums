@@ -1,5 +1,7 @@
 # textenums
 
+[![CircleCI](https://circleci.com/gh/alext/textenums.svg?style=shield)](https://circleci.com/gh/alext/textenums)
+
 textenums is a tool to automate the creation of methods that satisfy the
 `encoding.TextMarshaler` and `encoding.TextUnmarshaler` interfaces.
 Given the name of a (signed or unsigned) integer type T that has constants

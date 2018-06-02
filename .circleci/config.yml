@@ -1,0 +1,40 @@
+version: 2
+meta:
+  test_defaults: &test_defaults
+    working_directory: /go/src/github.com/alext/textenums
+    steps:
+      - checkout
+      - run:
+          name: generate
+          command: |
+            # The GOPATH is for testing #21
+            export GOPATH="$GOPATH:/tmp/jsonenums-test/go1:/tmp/jsonenums-test/go2"
+            go get -v -d ./...
+            go install
+            go generate ./...
+      - run:
+          name: run tests
+          command: |
+            go version
+            export GOPATH="$GOPATH:/tmp/jsonenums-test/go1:/tmp/jsonenums-test/go2"
+            go test -v ./...
+jobs:
+  go_1.10:
+    <<: *test_defaults
+    docker:
+      - image: circleci/golang:1.10
+  go_1.9:
+    <<: *test_defaults
+    docker:
+      - image: circleci/golang:1.9
+  go_1.8:
+    <<: *test_defaults
+    docker:
+      - image: circleci/golang:1.8
+workflows:
+  version: 2
+  build:
+    jobs:
+      - go_1.10
+      - go_1.9
+      - go_1.8
