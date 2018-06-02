@@ -11,18 +11,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// JSONenums is a tool to automate the creation of methods that satisfy the
-// json.Marshaler and json.Unmarshaler interfaces.
+// Textenums is a tool to automate the creation of methods that satisfy the
+// encoding.TextMarshaler and encoding.TextUnmarshaler interfaces.
 // Given the name of a (signed or unsigned) integer type T that has constants
-// defined, jsonenums will create a new self-contained Go source file implementing
+// defined, textenums will create a new self-contained Go source file implementing
 //
-//  func (t T) MarshalJSON() ([]byte, error)
-//  func (t *T) UnmarshalJSON([]byte) error
+//  func (t T) MarshalText() ([]byte, error)
+//  func (t *T) UnmarshalText([]byte) error
 //
 // The file is created in the same package and directory as the package that defines T.
 // It has helpful defaults designed for use with go generate.
 //
-// JSONenums is a simple implementation of a concept and the code might not be
+// Textenums is a simple implementation of a concept and the code might not be
 // the most performant or beautiful to read.
 //
 // For example, given this snippet,
@@ -41,21 +41,28 @@
 //
 // running this command
 //
-//	jsonenums -type=Pill
+//	textenums -type=Pill
 //
-// in the same directory will create the file pill_jsonenums.go, in package painkiller,
+// in the same directory will create the file pill_textenums.go, in package painkiller,
 // containing a definition of
 //
-//  func (r Pill) MarshalJSON() ([]byte, error)
-//  func (r *Pill) UnmarshalJSON([]byte) error
+//  func (r Pill) MarshalText() ([]byte, error)
+//  func (r *Pill) UnmarshalText([]byte) error
 //
-// That method will translate the value of a Pill constant to the string representation
-// of the respective constant name, so that the call fmt.Print(painkiller.Aspirin) will
-// print the string "Aspirin".
+// MarshalText will translate the value of a Pill constant to a []byte
+// containing the UTF-8 string representation of the respective constant name.
+// This is automatically used by packages like encoding/json, so that the call
+// json.Marshal(painkiller.Aspirin) will return the bytes
+// []byte("\"Aspirin\"").
+//
+// UnmarshalText performs the opposite operation; given the []byte
+// representation of a Pill constant it will change the receiver to equal the
+// corresponding constant. So given []byte("Aspirin") the receiver will
+// change to Aspirin and the returned error will be nil.
 //
 // Typically this process would be run using go generate, like this:
 //
-//	//go:generate jsonenums -type=Pill
+//	//go:generate textenums -type=Pill
 //
 // If multiple constants have the same value, the lexically first matching name will
 // be used (in the example, Acetaminophen will print as "Paracetamol").
@@ -66,7 +73,7 @@
 //
 // The -type flag accepts a comma-separated list of types so a single run can
 // generate methods for multiple types. The default output file is
-// t_jsonenums.go, where t is the lower-cased name of the first type listed.
+// t_textenums.go, where t is the lower-cased name of the first type listed.
 // The suffix can be overridden with the -suffix flag and a prefix may be added
 // with the -prefix flag.
 //
@@ -88,7 +95,7 @@ import (
 var (
 	typeNames    = flag.String("type", "", "comma-separated list of type names; must be set")
 	outputPrefix = flag.String("prefix", "", "prefix to be added to the output file")
-	outputSuffix = flag.String("suffix", "_jsonenums", "suffix to be added to the output file")
+	outputSuffix = flag.String("suffix", "_textenums", "suffix to be added to the output file")
 )
 
 func main() {
