@@ -2,6 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/alext/textenums.svg?style=shield)](https://circleci.com/gh/alext/textenums)
 
+This is adapted from [jsonenums](https://github.com/campoy/jsonenums) by @campoy.
+
 textenums is a tool to automate the creation of methods that satisfy the
 `encoding.TextMarshaler` and `encoding.TextUnmarshaler` interfaces.
 Given the name of a (signed or unsigned) integer type T that has constants
@@ -77,5 +79,3 @@ generate methods for multiple types. The default output file is `t_textenums.go`
 where t is the lower-cased name of the first type listed. The suffix can be
 overridden with the `-suffix` flag and a prefix may be added with the `-prefix`
 flag.
-
-This is not an official Google product (experimental or otherwise), it is just code that happens to be owned by Google.
